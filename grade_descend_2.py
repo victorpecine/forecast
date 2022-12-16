@@ -33,7 +33,7 @@ y = df['km/l']
 escala = StandardScaler()
 X_norm = escala.fit_transform(X)
 
-X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.25)
+X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.25, random_state=243)
 
 # Gradiente descendente
 epocas = 500
