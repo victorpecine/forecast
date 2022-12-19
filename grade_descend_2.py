@@ -33,7 +33,7 @@ y = df['km/l']
 escala = StandardScaler()
 X_norm = escala.fit_transform(X)
 
-X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.25, random_state=243)
+X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.15, random_state=243)
 
 # Gradiente descendente
 epocas = 500
@@ -70,6 +70,16 @@ X_test = escala.inverse_transform(X_norm_test)
 # plt.legend(labels=['y real', 'y previsto'])
 # plt.show()
 
-accuracy = r2_score(y_test, y_prev)
 
-print(accuracy)
+# # Métricas do modelo
+# accuracy = r2_score(y_test, y_prev)
+# print(accuracy)
+# # 0.7598937475878289
+
+# sgdr = SGDRegressor()
+# sgdr.fit(X_norm_train, y_train)
+
+# # O R-quadrado (coeficiente de determinação) é uma medida estatística de quão próximos os dados estão da linha de regressão ajustada
+# r_squared = sgdr.score(X_norm_train, y_train)
+# print(r_squared)
+# 0.6789768946804539
