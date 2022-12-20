@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score # Avaliação do modelo
 from sklearn.metrics import r2_score # Coeficiente de determinação
 
 
-# Regressão Linear com Gradiente Descendente
+# Regressão Linear com Gradiente Descendente -  Uma variável
 # Acesso ao banco de dados
 user = 'root'
 password = 'password'
