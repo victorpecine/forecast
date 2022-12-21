@@ -5,9 +5,10 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler # Normalização dos dados
 from sklearn.model_selection import train_test_split # Separação em dados de teste e treino
 from sklearn.linear_model import SGDRegressor # Stochastic Gradient Descent
-from sklearn.metrics import accuracy_score # Avaliação do modelo
 from sklearn.metrics import r2_score # Coeficiente de determinação
 from sqlalchemy import create_engine
+from sklearn.metrics import mean_squared_error 
+
 
 
 # Regressão Linear com Gradiente Descendente
@@ -55,10 +56,10 @@ modelo = SGDRegressor(max_iter=epocas,
                       verbose=0)
 
 
-# # Treinamento
+# Treinamento
 reg_linear = modelo.fit(X_norm_train, y_train)
 
-# # Previsão
+# Previsão
 y_prev = reg_linear.predict(X_norm_test)
 
 # plt.scatter(x=X_norm_test, y=y_test, c='blue', marker='*')
@@ -71,24 +72,33 @@ y_prev = reg_linear.predict(X_norm_test)
 # 'Desfazendo' a normalização
 X_test = escala.inverse_transform(X_norm_test)
 
-# plt.scatter(x=X_test, y=y_test, c='blue', marker='*')
+plt.scatter(x=X_test, y=y_test, c='blue', marker='*')
 
-# plt.scatter(X_test, y_prev, c='red', marker='o')
+plt.scatter(x=X_test, y=y_prev, c='red', marker='o')
 
-# plt.legend(labels=['y real', 'y previsto'])
-# plt.show()
-
-
-# Métricas do modelo
-accuracy = r2_score(y_test, y_prev)
-print(accuracy)
-# 0.9581904292245659
+plt.legend(labels=['y real', 'y previsto'])
+plt.show()
 
 
-sgdr = SGDRegressor()
-sgdr.fit(X_norm_train, y_train)
+# # Métricas do modelo
+# sgdr = SGDRegressor()
+# sgdr.fit(X_norm_train, y_train)
 
-# O R-quadrado (coeficiente de determinação) é uma medida estatística de quão próximos os dados estão da linha de regressão ajustada
-r_squared = sgdr.score(X_norm_train, y_train)
-print(r_squared)
+# # O R-quadrado (coeficiente de determinação) é uma medida estatística de quão próximos os dados estão da linha de regressão ajustada
+# r_squared = sgdr.score(X_norm_train, y_train)
+# print(r_squared)
 # 0.9561175769700393
+
+
+anos_experiencia = 2.2
+X_pontual = [[anos_experiencia]]
+
+y_pontual_prev = reg_linear.predict(X_pontual)[0]
+# print(y_pontual_prev)
+
+y_real = df.loc[df['years_experience'] == anos_experiencia, 'salary']
+
+# erro = y_real - y_pontual_prev
+# erro = mean_squared_error(y, y_prev)
+# print('Erro de R$ {}'.format(erro))
+print(y_prev)
