@@ -6,7 +6,6 @@ from sqlalchemy import create_engine
 from sklearn.preprocessing import StandardScaler # Normalização dos dados
 from sklearn.model_selection import train_test_split # Separação em dados de teste e treino
 from sklearn.linear_model import SGDRegressor # Stochastic Gradient Descent
-from sklearn.metrics import accuracy_score # Avaliação do modelo
 from sklearn.metrics import r2_score # Coeficiente de determinação
 
 
@@ -23,66 +22,40 @@ mydb = create_engine(url='mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
 
 
 
-passo = 0
-
 # Dataframe
-query = 'SELECT * FROM sensor_af2.df_af2'
+query = 'SELECT * FROM sensor_af2.df_af2 WHERE evento < 14 AND passoatual = 0'
 
 df = pd.read_sql(query, mydb)
 
-# Pré-processamento de dados
-X = df[['evento']]
+correlacao = df[['pressure', 'temperature', 'volume', 'volumetricflowrate']].corr()
+print(correlacao)
+"""
+                    pressure  temperature    volume  volumetricflowrate
+pressure            1.000000     0.320821 -0.370697           -0.505431
+temperature         0.320821     1.000000 -0.986516           -0.685875
+volume             -0.370697    -0.986516  1.000000            0.769641
+volumetricflowrate -0.505431    -0.685875  0.769641            1.000000
+"""
+
+X = df[['volume']]
 y = df['volumetricflowrate']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=113)
 
 # Normalização dos dados
 escala = StandardScaler()
-X_norm = escala.fit_transform(X)
 
-X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.3, random_state=243)
+X_train = escala.fit_transform(X_train)
+X_test = escala.fit_transform(X_test)
+
+df_train = pd.DataFrame(data=X_train, columns=['volume'])
+df_train['volumetricflowrate'] = y_train
 
 # Gradiente descendente
-epocas = 500
-alpha = 0.01 # Taxa de aprendizagem
-tolerancia = 0.01
+grad_descend = SGDRegressor()
+grad_descend.fit(X_train, y_train)
 
+y_pred = grad_descend.predict(X_test)
 
-modelo = SGDRegressor(max_iter=epocas,
-                      eta0=alpha,
-                      tol=tolerancia,
-                      verbose=1)
-
-
-# Treinamento
-reg_linear = modelo.fit(X_norm_train, y_train)
-
-# Previsão
-y_prev = reg_linear.predict(X_norm_test)
-
-plt.scatter(x=X_norm_test, y=y_test, c='blue', marker='*')
-
-plt.scatter(X_norm_test, y_prev, c='red', marker='o')
-
-plt.legend(labels=['y real', 'y previsto'])
+ax = sns.scatterplot(x=y_test, y=y_pred)
 plt.show()
-
-# 'Desfazendo' a normalização
-X_test = escala.inverse_transform(X_norm_test)
-
-plt.scatter(x=X_test, y=y_test, c='blue', marker='*')
-
-plt.scatter(X_test, y_prev, c='red', marker='o')
-
-plt.legend(labels=['y real', 'y previsto'])
-plt.show()
-
-
-# Métricas do modelo
-accuracy = r2_score(y_test, y_prev)
-print(accuracy)
-
-sgdr = SGDRegressor()
-sgdr.fit(X_norm_train, y_train)
-
-# O R-quadrado (coeficiente de determinação) é uma medida estatística de quão próximos os dados estão da linha de regressão ajustada
-r_squared = sgdr.score(X_norm_train, y_train)
-print(r_squared)
