@@ -35,33 +35,36 @@ df = pd.read_sql(query, mydb)
 #        ylabel='Salário (US\$)')
 # plt.show()
 
-X = df[['years_experience']]
-y = df['salary']
+# X = df[['years_experience']]
+# y = df['salary']
 
-# Normalização dos dados
-escala = StandardScaler()
-X_norm = escala.fit_transform(X)
+# # Normalização dos dados
+# escala = StandardScaler()
+# X_norm = escala.fit_transform(X)
 
-X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.15, random_state=243)
+# X_norm_train, X_norm_test, y_train, y_test = train_test_split(X_norm, y, test_size=0.30, random_state=243)
 
-# Gradiente descendente
-epocas = 500
-alpha = 0.01 # Taxa de aprendizagem
-tolerancia = 0.0001
-
-
-modelo = SGDRegressor(max_iter=epocas,
-                      eta0=alpha,
-                      tol=tolerancia,
-                      verbose=0)
+# # Gradiente descendente
+# epocas = 500
+# alpha = 0.01 # Taxa de aprendizagem
+# tolerancia = 0.0001
 
 
-# Treinamento
-reg_linear = modelo.fit(X_norm_train, y_train)
+# modelo = SGDRegressor(max_iter=epocas,
+#                       eta0=alpha,
+#                       tol=tolerancia,
+#                       verbose=0)
 
-# Previsão
-y_prev = reg_linear.predict(X_norm_test)
+# modelo.fit(X_norm_train, y_train)
 
+# # Previsão
+# y_prev = modelo.predict(X_norm_test)
+
+# print(len(X_norm_test))
+# print(len(X_norm_train))
+
+# print(len(y_test))
+# print(len(y_train))
 # plt.scatter(x=X_norm_test, y=y_test, c='blue', marker='*')
 
 # plt.scatter(X_norm_test, y_prev, c='red', marker='o')
@@ -69,15 +72,15 @@ y_prev = reg_linear.predict(X_norm_test)
 # plt.legend(labels=['y real', 'y previsto'])
 # plt.show()
 
-# 'Desfazendo' a normalização
-X_test = escala.inverse_transform(X_norm_test)
+# # 'Desfazendo' a normalização
+# X_test = escala.inverse_transform(X_norm_test)
 
-plt.scatter(x=X_test, y=y_test, c='blue', marker='*')
+# plt.scatter(x=X_test, y=y_test, c='blue', marker='*')
 
-plt.scatter(x=X_test, y=y_prev, c='red', marker='o')
+# plt.scatter(x=X_test, y=y_prev, c='red', marker='o')
 
-plt.legend(labels=['y real', 'y previsto'])
-plt.show()
+# plt.legend(labels=['y real', 'y previsto'])
+# plt.show()
 
 
 # # Métricas do modelo
@@ -90,15 +93,15 @@ plt.show()
 # 0.9561175769700393
 
 
-anos_experiencia = 2.2
-X_pontual = [[anos_experiencia]]
+# anos_experiencia = 2.2
+# X_pontual = [[anos_experiencia]]
 
-y_pontual_prev = reg_linear.predict(X_pontual)[0]
-# print(y_pontual_prev)
+# y_pontual_prev = reg_linear.predict(X_pontual)[0]
+# # print(y_pontual_prev)
 
-y_real = df.loc[df['years_experience'] == anos_experiencia, 'salary']
+# y_real = df.loc[df['years_experience'] == anos_experiencia, 'salary']
 
 # erro = y_real - y_pontual_prev
 # erro = mean_squared_error(y, y_prev)
 # print('Erro de R$ {}'.format(erro))
-print(y_prev)
+# print(y_prev)
