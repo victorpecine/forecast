@@ -2,8 +2,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
-from statsmodels.tsa.statespace.sarimax import SARIMAX
+from lazypredict.Supervised import LazyRegressor
+from statsmodels.tsa.arima.model import ARIMA
 from sklearn.model_selection import train_test_split
+from statsmodels.tsa.seasonal import seasonal_decompose
+
 
 
 
@@ -44,30 +47,26 @@ df = df.drop(columns=['id', 'data'])
 #        ylabel=None)
 # plt.show()
 
-
 # Separação dos dados em teste e treino
-# treino = df[df.index < pd.to_datetime('2013-09-16', format='%Y-%m-%d')]
-# teste = df[df.index > pd.to_datetime('2013-09-16', format='%Y-%m-%d')]
-
-X = df['valor_real']
-y = df.index
+X = df.index
+y = df['valor_real']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-"""
-Método Autoregressive Moving Average (ARMA)
+# Autocorrelação
+# x = pd.plotting.autocorrelation_plot(df)
+# x.plot()
+# plt.show()
 
-To define an ARMA model with the SARIMAX class, we pass in the order parameters of (1, 0 ,1). Alpha corresponds to the significance level of our predictions. Typically, we choose an alpha = 0.05. Here, the ARIMA algorithm calculates upper and lower bounds around the prediction such that there is a 5 percent chance that the real value will be outside of the upper and lower bounds. This means that there is a 95 percent confidence that the real value will be between the upper and lower bounds of our predictions.
-https://builtin.com/data-science/time-series-forecasting-python
-"""
+# Salvar a decomposicao em result
+result = seasonal_decompose(df, period=1)
 
-ARMAmodel = SARIMAX(y_train, order = (1, 0, 1))
-ARMAmodel = ARMAmodel.fit()
+# Plotar os 4 gráficos
+fig, (ax1,ax2,ax3, ax4) = plt.subplots(4,1, figsize=(12,8))
+result.observed.plot(ax=ax1) # Observação original
+result.trend.plot(ax=ax2) # Tendência
+result.seasonal.plot(ax=ax3) # Sazonalidade
+result.resid.plot(ax=ax4) # Residual
 
-y_pred = ARMAmodel.get_forecast(len(X_test))
-y_pred_df = y_pred.conf_int(alpha = 0.05) 
-y_pred_df["Predictions"] = ARMAmodel.predict(start = y_pred_df.index[0], end = y_pred_df.index[-1])
-print(y_pred_df)
-# y_pred_df.index = X_test
-# y_pred_out = y_pred_df["Predictions"] 
-
+plt.tight_layout()
+plt.show()
