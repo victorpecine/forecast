@@ -58,15 +58,16 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 # x.plot()
 # plt.show()
 
-# Salvar a decomposicao em result
-result = seasonal_decompose(df, period=1)
+# # Salvar a decomposicao em result
+# result = seasonal_decompose(df, period=1)
 
-# Plotar os 4 gráficos
-fig, (ax1,ax2,ax3, ax4) = plt.subplots(4,1, figsize=(12,8))
-result.observed.plot(ax=ax1) # Observação original
-result.trend.plot(ax=ax2) # Tendência
-result.seasonal.plot(ax=ax3) # Sazonalidade
-result.resid.plot(ax=ax4) # Residual
+# # Plotar os 4 gráficos
+# fig, (ax1,ax2,ax3, ax4) = plt.subplots(4,1, figsize=(12,8))
+# result.observed.plot(ax=ax1) # Observação original
+# result.trend.plot(ax=ax2) # Tendência
+# result.seasonal.plot(ax=ax3) # Sazonalidade
+# result.resid.plot(ax=ax4) # Residual
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
+
